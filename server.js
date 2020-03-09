@@ -8,3 +8,6 @@
 //   Add departments, roles, and employees
 //   View departments, roles, and employees
 //   Update employee roles
+
+const inquirer = require('inquirer');
+const mysql = require('mysql');
