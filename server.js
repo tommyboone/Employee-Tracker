@@ -379,3 +379,27 @@ function addRole() {
     });
   });
 }
+
+function addDepartment() {
+  connection.query("SELECT * FROM department", function(err, res) {
+    console.table(err, res);
+    let selectDepartment = [];
+    for (var i = 0; i < res.length; i++) {
+      selectDepartment.push(res[i].name);
+    }
+
+    inquirer.prompt([
+      {
+        name: "newDepartment",
+        type: "input",
+        message: "What is the name of this new Department?"
+      },
+    ]).then (function(answer){
+      console.log(answer);
+      connection.query("INSERT INTO department (name) VALUES (?)",[answer.newDepartment],function(error,result){
+        console.log(error, result)
+        start();
+      })
+    });
+  });
+}
