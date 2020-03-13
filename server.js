@@ -86,7 +86,7 @@ function start() {
         case viewOptions[8]:
           deleteRole();
           break;
-        case viewOptions[8]:
+        case viewOptions[9]:
           console.log("Goodbye!");
           connection.end();
           break;
