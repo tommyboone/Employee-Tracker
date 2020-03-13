@@ -44,10 +44,9 @@ const viewOptions = [
   "Add Department",
   "Add Role",
   "Delete Role",
+  "Delete Department",
   "Exit"
 ];
-
-
 
 function start() {
   inquirer
@@ -87,6 +86,9 @@ function start() {
           deleteRole();
           break;
         case viewOptions[9]:
+          deleteDepartment();
+          break;
+        case viewOptions[10]:
           console.log("Goodbye!");
           connection.end();
           break;
@@ -167,25 +169,24 @@ function start() {
                   for (var i = 0; i < res.length; i++) {
                     if (answer.update === res[i].first_name) {
                       empID = res[i].first_name;
-                      console.log(empID)
+                      console.log(empID);
                     }
                   }
 
                   for (var i = 0; i < resRole.length; i++) {
                     if (roleAnswer.roleUpdate === resRole[i].title) {
                       roleID = resRole[i].id;
-                      console.log(roleID)
-                    } 
-                     connection.query(
-                    "UPDATE employee SET role_id = ? WHERE first_name = ?",
-                    [roleID, empID],
-                    function(err, res) {
-                      console.log(res)
-                      // start();
+                      console.log(roleID);
                     }
-                  );
+                    connection.query(
+                      "UPDATE employee SET role_id = ? WHERE first_name = ?",
+                      [roleID, empID],
+                      function(err, res) {
+                        console.log(res);
+                        // start();
+                      }
+                    );
                   }
-                
                 });
             });
             // console.log(answer);
@@ -259,7 +260,6 @@ function start() {
             }
           );
         });
-
     });
   }
 
@@ -301,7 +301,6 @@ function start() {
             "INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)",
             [answer.firstName, answer.lastName, roleid, 1],
             function(err, res) {
-        
               start();
             }
           );
@@ -317,52 +316,51 @@ function addRole() {
   //   for (var i = 0; i < res.length; i++) {
   //     selectRole.push(res[i].title);
   //   }
-    connection.query("SELECT * FROM department", function(error, result) {
-      console.table(error, result);
-      let selectDepartment = [];
-      for (var i = 0; i < result.length; i++) {
-        selectDepartment.push(result[i].name);
-      }
-      inquirer
-        .prompt([
-          {
-            name: "newRole",
-            type: "input",
-            message: "What is the title of this new Role?"
-          },
-          {
-            name: "newSalary",
-            type: "input",
-            message: "What is the salary in this role?"
-          },
-          {
-            name: "roleInDepartment",
-            type: "list",
-            message: "What department is this role in?",
-            choices: selectDepartment
+  connection.query("SELECT * FROM department", function(error, result) {
+    console.table(error, result);
+    let selectDepartment = [];
+    for (var i = 0; i < result.length; i++) {
+      selectDepartment.push(result[i].name);
+    }
+    inquirer
+      .prompt([
+        {
+          name: "newRole",
+          type: "input",
+          message: "What is the title of this new Role?"
+        },
+        {
+          name: "newSalary",
+          type: "input",
+          message: "What is the salary in this role?"
+        },
+        {
+          name: "roleInDepartment",
+          type: "list",
+          message: "What department is this role in?",
+          choices: selectDepartment
+        }
+      ])
+      .then(function(answer) {
+        console.log(answer);
+        var empRole;
+        for (var i = 0; i < result.length; i++) {
+          if (answer.roleInDepartment === result[i].name) {
+            empRole = result[i].id;
+            console.log(empRole);
           }
-        ])
-        .then(function(answer) {
-          console.log(answer);
-          var empRole;
-          for (var i = 0; i < result.length; i++) {
-            if (answer.roleInDepartment === result[i].name) {
-              empRole = result[i].id;
-              console.log(empRole)
-            }
+        }
+        connection.query(
+          "INSERT INTO role(title, salary, department_id) VALUES(?, ?, ?)",
+          [answer.newRole, answer.newSalary, empRole],
+          function(err, res) {
+            // console.table(err, res);
+            start();
           }
-          connection.query(
-            "INSERT INTO role(title, salary, department_id) VALUES(?, ?, ?)",
-            [answer.newRole, answer.newSalary, empRole],
-            function(err, res) {
-              // console.table(err, res);
-              start();
-            }
-          );
-        });
-    });
-  };
-
+        );
+      });
+  });
+}
 
 function addDepartment() {
   connection.query("SELECT * FROM department", function(err, res) {
@@ -372,19 +370,57 @@ function addDepartment() {
       selectDepartment.push(res[i].name);
     }
 
-    inquirer.prompt([
-      {
-        name: "newDepartment",
-        type: "input",
-        message: "What is the name of this new Department?"
-      },
-    ]).then (function(answer){
-      console.log(answer);
-      connection.query("INSERT INTO department (name) VALUES (?)",[answer.newDepartment],function(error,result){
-        // console.log(error, result)
-        start();
-      })
-    });
+    inquirer
+      .prompt([
+        {
+          name: "newDepartment",
+          type: "input",
+          message: "What is the name of this new Department?"
+        }
+      ])
+      .then(function(answer) {
+        console.log(answer);
+        connection.query(
+          "INSERT INTO department (name) VALUES (?)",
+          [answer.newDepartment],
+          function(error, result) {
+            // console.log(error, result)
+            start();
+          }
+        );
+      });
   });
+}
 
+function deleteDepartment() {
+  connection.query("SELECT * FROM department", function(err, res) {
+    console.log(err, res);
+    var departmentList = [];
+    for (var i = 0; i < res.length; i++) {
+      departmentList.push(res[i].title);
+    }
+    inquirer
+      .prompt({
+        name: "deletedDepartment",
+        type: "list",
+        message: "Which Department would you like to remove?",
+        choices: departmentList
+      })
+      .then(function(response) {
+        console.log(response);
+        var delDepartment;
+        for (var i = 0; i < res.length; i++) {
+          if (response.deletedRole === res[i].title) {
+            delDepartment = res[i].id;
+          }
+        }
+        connection.query(
+          `DELETE FROM department where id = ${delDepartment}`,
+          function(err, res) {
+            console.log(err, res);
+            start();
+          }
+        );
+      });
+  });
 }
