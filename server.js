@@ -322,7 +322,7 @@ function start() {
             "INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES(?, ?, ?, ?)",
             [answer.firstName, answer.lastName, roleid, 1],
             function(err, res) {
-              console.table(err, res);
+        
               start();
             }
           );
@@ -332,14 +332,14 @@ function start() {
 }
 
 function addRole() {
-  connection.query("SELECT * FROM role", function(err, res) {
-    console.log(err, res);
-    var selectRole = [];
-    for (var i = 0; i < res.length; i++) {
-      selectRole.push(res[i].title);
-    }
+  // connection.query("SELECT * FROM role", function(err, res) {
+  //   console.log(err, res);
+  //   var selectRole = [];
+  //   for (var i = 0; i < res.length; i++) {
+  //     selectRole.push(res[i].title);
+  //   }
     connection.query("SELECT * FROM department", function(error, result) {
-      console.table(err, res);
+      console.table(error, result);
       let selectDepartment = [];
       for (var i = 0; i < result.length; i++) {
         selectDepartment.push(result[i].name);
@@ -366,14 +366,15 @@ function addRole() {
         .then(function(answer) {
           console.log(answer);
           var empRole;
-          for (var i = 0; i < res.length; i++) {
-            if (answer.empRole === res[i].title) {
-              empRole = res[i].id;
+          for (var i = 0; i < result.length; i++) {
+            if (answer.roleInDepartment === result[i].name) {
+              empRole = result[i].id;
+              console.log(empRole)
             }
           }
           connection.query(
             "INSERT INTO role(title, salary, department_id) VALUES(?, ?, ?)",
-            [answer.newRole, answer.newSalary, answer.roleInDepartment],
+            [answer.newRole, answer.newSalary, empRole],
             function(err, res) {
               // console.table(err, res);
               start();
@@ -381,8 +382,8 @@ function addRole() {
           );
         });
     });
-  });
-}
+  };
+
 
 function addDepartment() {
   connection.query("SELECT * FROM department", function(err, res) {
@@ -401,9 +402,10 @@ function addDepartment() {
     ]).then (function(answer){
       console.log(answer);
       connection.query("INSERT INTO department (name) VALUES (?)",[answer.newDepartment],function(error,result){
-        console.log(error, result)
+        // console.log(error, result)
         start();
       })
     });
   });
+
 }
