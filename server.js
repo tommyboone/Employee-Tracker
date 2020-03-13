@@ -257,7 +257,7 @@ function start() {
   //       .prompt({
   //         name: "deletedRole",
   //         type: "list",
-  //         message: "Which Rolewould you like to remove?",
+  //         message: "Which Role would you like to remove?",
   //         choices: roleList
   //       })
   //       .then(function(response) {
@@ -325,4 +325,57 @@ function start() {
         });
     });
   }
+}
+
+function addRole() {
+  connection.query("SELECT * FROM role", function(err, res) {
+    console.log(err, res);
+    var selectRole = [];
+    for (var i = 0; i < res.length; i++) {
+      selectRole.push(res[i].title);
+    }
+    connection.query("SELECT * FROM department", function(error, result) {
+      console.table(err, res);
+      let selectDepartment = [];
+      for (var i = 0; i < result.length; i++) {
+        selectDepartment.push(result[i].name);
+      }
+      inquirer
+        .prompt([
+          {
+            name: "newRole",
+            type: "input",
+            message: "What is the title of this new Role?"
+          },
+          {
+            name: "newSalary",
+            type: "input",
+            message: "What is the salary in this role?"
+          },
+          {
+            name: "roleInDepartment",
+            type: "list",
+            message: "What department is this role in?",
+            choices: selectDepartment
+          }
+        ])
+        .then(function(answer) {
+          console.log(answer);
+          var empRole;
+          for (var i = 0; i < res.length; i++) {
+            if (answer.empRole === res[i].title) {
+              empRole = res[i].id;
+            }
+          }
+          connection.query(
+            "INSERT INTO role(title, salary, department_id) VALUES(?, ?, ?)",
+            [answer.newRole, answer.newSalary, answer.roleInDepartment],
+            function(err, res) {
+              // console.table(err, res);
+              start();
+            }
+          );
+        });
+    });
+  });
 }
