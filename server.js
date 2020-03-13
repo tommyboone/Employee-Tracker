@@ -397,7 +397,7 @@ function deleteDepartment() {
     console.log(err, res);
     var departmentList = [];
     for (var i = 0; i < res.length; i++) {
-      departmentList.push(res[i].title);
+      departmentList.push(res[i].name);
     }
     inquirer
       .prompt({
