@@ -188,21 +188,25 @@ function start() {
                   for (var i = 0; i < res.length; i++) {
                     if (answer.update === res[i].first_name) {
                       empID = res[i].first_name;
+                      console.log(empID)
                     }
                   }
 
                   for (var i = 0; i < resRole.length; i++) {
-                    if (answer.updateOptions === resRole[i].id) {
-                      roleID = resRole[i].role_id;
-                    }
-                  }
-                  connection.query(
+                    if (roleAnswer.roleUpdate === resRole[i].title) {
+                      roleID = resRole[i].id;
+                      console.log(roleID)
+                    } 
+                     connection.query(
                     "UPDATE employee SET role_id = ? WHERE first_name = ?",
                     [roleID, empID],
                     function(err, res) {
-                      console.log(err, res);
+                      console.log(res)
+                      // start();
                     }
                   );
+                  }
+                
                 });
             });
             // console.log(answer);
