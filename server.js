@@ -410,7 +410,7 @@ function deleteDepartment() {
         console.log(response);
         var delDepartment;
         for (var i = 0; i < res.length; i++) {
-          if (response.deletedRole === res[i].title) {
+          if (response.deletedDepartment === res[i].name) {
             delDepartment = res[i].id;
           }
         }
