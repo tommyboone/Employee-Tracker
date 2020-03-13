@@ -43,35 +43,11 @@ const viewOptions = [
   "Add Employee",
   "Add Department",
   "Add Role",
+  "Delete Role",
   "Exit"
 ];
 
-// const employeeOptions = [
-//   "Michael Scott",
-//   "Jim Halpert",
-//   "Dwight Schrute",
-//   "Pam Beasley",
-//   "Toby Flenderson",
-//   "Kelly Kapur"
-// ];
 
-// const roles = [
-//   "Salesperson",
-//   "Customer Service",
-//   "Accountant",
-//   "Office Administrator",
-//   "HR Rep",
-//   "Manager"
-// ];
-
-// const updateOptions = [
-//   "First Name",
-//   "Last Name",
-//   "Role",
-//   "Department",
-//   "Manager",
-//   "Exit"
-// ];
 
 function start() {
   inquirer
@@ -106,6 +82,9 @@ function start() {
           break;
         case viewOptions[7]:
           addRole();
+          break;
+        case viewOptions[8]:
+          deleteRole();
           break;
         case viewOptions[8]:
           console.log("Goodbye!");
@@ -250,39 +229,39 @@ function start() {
     });
   }
 
-  // function deleteRole() {
-  //   connection.query("SELECT * FROM role", function(err, res) {
-  //     console.log(err, res);
-  //     var roleList = [];
-  //     for (var i = 0; i < res.length; i++) {
-  //       roleList.push(res[i].title);
-  //     }
-  //     inquirer
-  //       .prompt({
-  //         name: "deletedRole",
-  //         type: "list",
-  //         message: "Which Role would you like to remove?",
-  //         choices: roleList
-  //       })
-  //       .then(function(response) {
-  //         console.log(response);
-  //         var deleteRole;
-  //         for (var i = 0; i < res.length; i++) {
-  //           if (response.deletedRole === res[i].title) {
-  //             deleteRole = res[i].id;
-  //           }
-  //         }
-  //         connection.query(
-  //           `DELETE FROM role where id = ${deleteRole}`,
-  //           function(err, res) {
-  //             console.log(err, res);
-  //             start();
-  //           }
-  //         );
-  //       });
+  function deleteRole() {
+    connection.query("SELECT * FROM role", function(err, res) {
+      console.log(err, res);
+      var roleList = [];
+      for (var i = 0; i < res.length; i++) {
+        roleList.push(res[i].title);
+      }
+      inquirer
+        .prompt({
+          name: "deletedRole",
+          type: "list",
+          message: "Which Role would you like to remove?",
+          choices: roleList
+        })
+        .then(function(response) {
+          console.log(response);
+          var deleteRole;
+          for (var i = 0; i < res.length; i++) {
+            if (response.deletedRole === res[i].title) {
+              deleteRole = res[i].id;
+            }
+          }
+          connection.query(
+            `DELETE FROM role where id = ${deleteRole}`,
+            function(err, res) {
+              console.log(err, res);
+              start();
+            }
+          );
+        });
 
-  //   });
-  // }
+    });
+  }
 
   function addEmployee() {
     connection.query("SELECT * FROM role", function(err, res) {
