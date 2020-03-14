@@ -1,22 +1,3 @@
-//Create a COMPANY database
-// In the company database I need three tables: Employee, Role, and Department
-// In the Department table, I need two rows:  ID and name
-// In the Role table, I need: ID, title, Salary, and department_id
-// In the Employee Table, I need : ID, first name, last name, role_id, manager_id
-
-// I want to build a command-line app that allows user to :
-//   Add departments, roles, and employees
-//   View departments, roles, and employees
-//   Update employee roles
-
-// Use inquirer prompts to determine what the user wants to do
-// View Departments, Roles, and Employees
-// Add Departments, Roles and Employees
-// Update Employee Roles
-// Update Employee Managers
-// View Employees by Manager
-// Delete Departments, Roles, and Employees
-// View the total budget ie combined salaries of all employees in that department
 
 const inquirer = require("inquirer");
 const mysql = require("mysql");
@@ -310,12 +291,7 @@ function start() {
 }
 
 function addRole() {
-  // connection.query("SELECT * FROM role", function(err, res) {
-  //   console.log(err, res);
-  //   var selectRole = [];
-  //   for (var i = 0; i < res.length; i++) {
-  //     selectRole.push(res[i].title);
-  //   }
+
   connection.query("SELECT * FROM department", function(error, result) {
     console.table(error, result);
     let selectDepartment = [];
